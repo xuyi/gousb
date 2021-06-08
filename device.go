@@ -50,6 +50,9 @@ type DeviceDesc struct {
 	iManufacturer int // The Manufacturer descriptor index
 	iProduct      int // The Product descriptor index
 	iSerialNumber int // The SerialNumber descriptor index
+
+	// Parent device descriptor
+	Parent *DeviceDesc
 }
 
 // String returns a human-readable version of the device descriptor.
@@ -87,8 +90,6 @@ type Device struct {
 	Desc *DeviceDesc
 	// Timeout for control commands
 	ControlTimeout time.Duration
-	// Parent device descriptor
-	ParentDesc *DeviceDesc
 
 	// Claimed config
 	mu      sync.Mutex

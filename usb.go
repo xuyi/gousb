@@ -193,6 +193,14 @@ func (c *Context) OpenDevices(opener func(desc *DeviceDesc) bool) ([]*Device, er
 			continue
 		}
 
+		parent := c.libusb.getParent(dev)
+		if parent != nil {
+			parentDesc, err := c.libusb.getDeviceDesc(parent)
+			if err == nil {
+				desc.Parent = parentDesc
+			}
+		}
+
 		if opener(desc) {
 			handle, err := c.libusb.open(dev)
 			if err != nil {
@@ -201,14 +209,6 @@ func (c *Context) OpenDevices(opener func(desc *DeviceDesc) bool) ([]*Device, er
 				continue
 			}
 			o := &Device{handle: handle, ctx: c, Desc: desc}
-
-			parent := c.libusb.getParent(dev)
-			if parent != nil {
-				parentDesc, err := c.libusb.getDeviceDesc(parent)
-				if err == nil {
-					o.ParentDesc = parentDesc
-				}
-			}
 
 			ret = append(ret, o)
 			c.mu.Lock()
