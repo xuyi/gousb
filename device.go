@@ -87,6 +87,8 @@ type Device struct {
 	Desc *DeviceDesc
 	// Timeout for control commands
 	ControlTimeout time.Duration
+	// Parent device descriptor
+	ParentDesc *DeviceDesc
 
 	// Claimed config
 	mu      sync.Mutex

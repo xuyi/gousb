@@ -201,6 +201,15 @@ func (c *Context) OpenDevices(opener func(desc *DeviceDesc) bool) ([]*Device, er
 				continue
 			}
 			o := &Device{handle: handle, ctx: c, Desc: desc}
+
+			parent := c.libusb.getParent(dev)
+			if parent != nil {
+				parentDesc, err := c.libusb.getDeviceDesc(parent)
+				if err == nil {
+					o.ParentDesc = parentDesc
+				}
+			}
+
 			ret = append(ret, o)
 			c.mu.Lock()
 			c.devices[o] = true

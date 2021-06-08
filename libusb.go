@@ -166,6 +166,8 @@ type libusbIntf interface {
 	data(*libusbTransfer) (int, TransferStatus)
 	free(*libusbTransfer)
 	setIsoPacketLengths(*libusbTransfer, uint32)
+
+	getParent(*libusbDevice) *libusbDevice
 }
 
 // libusbImpl is an implementation of libusbIntf using real CGo-wrapped libusb.
@@ -485,6 +487,10 @@ func (libusbImpl) free(t *libusbTransfer) {
 
 func (libusbImpl) setIsoPacketLengths(t *libusbTransfer, length uint32) {
 	C.libusb_set_iso_packet_lengths((*C.struct_libusb_transfer)(t), C.uint(length))
+}
+
+func (libusbImpl) getParent(dev *libusbDevice) *libusbDevice {
+	return (*libusbDevice)(C.libusb_get_parent((*C.libusb_device)(dev)))
 }
 
 // xferDoneMap keeps a map of done callback channels for all allocated transfers.
